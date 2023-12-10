@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+
+    <style>
+    body {
+        font-family: 'Times New Roman', serif;
+        background-color: #eaeaea;
+        margin: 0;
+        padding: 0;
+    }
+
+    header {
+        background-color: #333;
+        color: white;
+        padding: 20px;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    section {
+        max-width: 600px;
+        margin: 20px auto;
+        padding: 30px;
+        background-color: #fff;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+        border-radius: 8px;
+    }
+
+    ul {
+        list-style-type: none;
+        padding: 0;
+        margin-bottom: 20px;
+    }
+
+    li {
+        margin-bottom: 15px;
+    }
+
+    form {
+        margin-top: 30px;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 10px;
+        font-weight: bold;
+    }
+
+    input, textarea, select, button {
+        margin-bottom: 20px;
+        padding: 12px;
+        width: 100%;
+        box-sizing: border-box;
+        border: 1px solid #aaa;
+        border-radius: 6px;
+    }
+
+    select {
+        appearance: none;
+        background-color: #fff;
+    }
+
+    button {
+        background-color: #2196F3;
+        color: white;
+        border: none;
+        padding: 15px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 18px;
+        border-radius: 8px;
+        cursor: pointer;
+    }
+</style>
+
+</head>
+<body>
+    <header>
+        <h1>Dashboard</h1>
+
+        <form method="post" action="{% url 'view_all_cards' %}">
+            {% csrf_token %}
+            <button type="submit">View All Baseball Cards</button>
+        </form>
+
+        <form method="post" action="{% url 'logout' %}">
+            {% csrf_token %}
+            <button type="submit">Logout</button>
+        </form>
+    </header>
+
+    <section>
+        {% if error_message %}
+            <p style="color: red;">{{ error_message }}</p>
+        {% endif %}
+
+        <div style="height: 400px; overflow: auto;">
+            <h2>Your Baseball Cards</h2>
+            <ul>
+                {% for baseball_card in user_baseball_cards %}
+                    <li>
+                        <div style="display: flex; align-items: center; justify-content: space-between;">
+                            <div>
+                                <p><strong>Name:</strong> {{ baseball_card.name }}</p>
+                                <p><strong>Team:</strong> {{ baseball_card.team }}</p>
+                                <p><strong>Price:</strong> ${{ baseball_card.price }}</p>
+                                <p><strong>Condition:</strong> {{ baseball_card.condition }}</p>
+                                <p><strong>Description:</strong> {{ baseball_card.description }}</p>
+                            </div>
+
+                            <div>
+                                <form method="get" action="{% url 'edit_card' baseball_card.id %}">
+                                    <button type="submit">Edit</button>
+                                </form>
+
+                                <form method="post" action="{% url 'delete_card' baseball_card.id %}">
+                                    {% csrf_token %}
+                                    <button type="submit" onclick="return confirm('Are you sure you want to delete this card?')">Delete</button>
+                                </form>
+                            </div>
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <h2>Add a Baseball Card</h2>
+        <form method="post" action="{% url 'dashboard' %}">
+            {% csrf_token %}
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" required><br>
+            
+            <label for="team">Team:</label>
+            <select id="team" name="team" required>
+                <option value="" disabled selected>Select a Team</option>
+                <option value="Arizona Diamondbacks">Arizona Diamondbacks</option>
+                <option value="Atlanta Braves">Atlanta Braves</option>
+                <option value="Baltimore Orioles">Baltimore Orioles</option>
+                <option value="Boston Red Sox">Boston Red Sox</option>
+                <option value="Chicago White Sox">Chicago White Sox</option>
+                <option value="Chicago Cubs">Chicago Cubs</option>
+                <option value="Cincinnati Reds">Cincinnati Reds</option>
+                <option value="Cleveland Guardians">Cleveland Guardians</option>
+                <option value="Colorado Rockies">Colorado Rockies</option>
+                <option value="Detroit Tigers">Detroit Tigers</option>
+                <option value="Houston Astros">Houston Astros</option>
+                <option value="Kansas City Royals">Kansas City Royals</option>
+                <option value="Los Angeles Angels">Los Angeles Angels</option>
+                <option value="Los Angeles Dodgers">Los Angeles Dodgers</option>
+                <option value="Miami Marlins">Miami Marlins</option>
+                <option value="Milwaukee Brewers">Milwaukee Brewers</option>
+                <option value="Minnesota Twins">Minnesota Twins</option>
+                <option value="New York Yankees">New York Yankees</option>
+                <option value="New York Mets">New York Mets</option>
+                <option value="Oakland Athletics">Oakland Athletics</option>
+                <option value="Philadelphia Phillies">Philadelphia Phillies</option>
+                <option value="Pittsburgh Pirates">Pittsburgh Pirates</option>
+                <option value="San Diego Padres">San Diego Padres</option>
+                <option value="San Francisco Giants">San Francisco Giants</option>
+                <option value="Seattle Mariners">Seattle Mariners</option>
+                <option value="St. Louis Cardinals">St. Louis Cardinals</option>
+                <option value="Tampa Bay Rays">Tampa Bay Rays</option>
+                <option value="Texas Rangers">Texas Rangers</option>
+                <option value="Toronto Blue Jays">Toronto Blue Jays</option>
+                <option value="Washington Nationals">Washington Nationals</option>
+            </select><br>
+            
+            <label for="description">Description:</label>
+            <textarea id="description" name="description" required></textarea><br>
+            <label for="price">Price:</label>
+            <input type="number" id="price" name="price" required min="0" step="0.01"><br>
+            <label for="condition">Condition:</label>
+            <select id="condition" name="condition" required>
+                <option value="" disabled selected>Select a Condition</option>
+                <option value="Mint">Mint</option>
+                <option value="Excellent">Excellent</option>
+                <option value="Great">Great</option>
+                <option value="Good">Good</option>
+                <option value="Fair">Fair</option>
+                <option value="Poor">Poor</option>
+                <option value="N/A">N/A</option>
+            </select><br>
+            <button type="submit">Add Baseball Card</button>
+        </form>
+    </section>
+
+</body>
+</html>
+

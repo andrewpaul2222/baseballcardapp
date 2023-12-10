@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Baseball Cards</title>
+
+    <style>
+        body {
+            font-family: 'Times New Roman', serif;
+            background-color: #eaeaea;
+            margin: 0;
+            padding: 0;
+        }
+    
+        header {
+            background-color: #333;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+    
+        section {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+    
+        ul {
+            list-style-type: none;
+            padding: 0;
+            margin-bottom: 20px;
+        }
+    
+        li {
+            margin-bottom: 10px;
+        }
+    
+        form {
+            margin-top: 20px;
+        }
+    
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+    
+        input, textarea, select, button {
+            margin-bottom: 15px;
+            padding: 12px;
+            width: 100%;
+            box-sizing: border-box;
+            border: 1px solid #aaa;
+            border-radius: 6px;
+        }
+    
+        select {
+            appearance: none;
+            background-color: #fff;
+        }
+    
+        button {
+            background-color: #2196F3;
+            color: white;
+            border: none;
+            padding: 15px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 18px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>All Baseball Cards</h1>
+        
+        <form method="get" action="{% url 'return_to_dashboard' %}">
+            <button type="submit">Return to Dashboard</button>
+        </form>
+        
+        <form method="post" action="{% url 'logout' %}">
+            {% csrf_token %}
+            <button type="submit">Logout</button>
+        </form>
+    </header>
+
+    <section>
+        <form method="post" action="{% url 'filter_cards' %}">
+            {% csrf_token %}
+        
+            <label for="player_filter">Filter by Player:</label>
+            <select id="player_filter" name="player_filter">
+                <option value="" selected>All Players</option>
+                {% for player in all_players %}
+                    <option value="{{ player }}">{{ player }}</option>
+                {% endfor %}
+            </select>
+
+            <label for="team_filter">Filter by Team:</label>
+            <select id="team_filter" name="team_filter">
+                <option value="" selected>All Teams</option>
+                {% for team in teams %}
+                    <option value="{{ team }}">{{ team }}</option>
+                {% endfor %}
+            </select>
+        
+            <label for="condition_filter">Filter by Condition:</label>
+            <select id="condition_filter" name="condition_filter">
+                <option value="" selected>All Conditions</option>
+                {% for condition in conditions %}
+                    <option value="{{ condition }}">{{ condition }}</option>
+                {% endfor %}
+            </select>
+
+            <label for="min_price">Min Price:</label>
+            <input type="number" id="min_price" name="min_price" step="0.01" placeholder="Min Price">
+
+            <label for="max_price">Max Price:</label>
+            <input type="number" id="max_price" name="max_price" step="0.01" placeholder="Max Price">
+        
+            <button type="submit">Apply Filter</button>
+        </form>
+
+        <form method="post" action="{% url 'generate_report' %}">
+            {% csrf_token %}
+            <button type="submit">Generate Report</button>
+        </form>
+
+        {% if error_message %}
+            <p style="color: red;">{{ error_message }}</p>
+        {% endif %}
+
+        <div style="height: 1000px; overflow: auto;">
+            <ul>
+                {% for baseball_card in all_baseball_cards %}
+                    <li>
+                        <div style="display: flex; align-items: center; justify-content: space-between;">
+                            <div>
+                                <p><strong>Name:</strong> {{ baseball_card.name }}</p>
+                                <p><strong>Team:</strong> {{ baseball_card.team }}</p>
+                                <p><strong>Price:</strong> ${{ baseball_card.price }}</p>
+                                <p><strong>Condition:</strong> {{ baseball_card.condition }}</p>
+                                <p><strong>Description:</strong> {{ baseball_card.description }}</p>
+                            </div>
+
+                            <div>
+                                <form method="post" action="{% url 'like_card' baseball_card.id %}">
+                                    {% csrf_token %}
+                                    <button type="submit">Like</button>
+                                </form>
+                                <span>Likes: {{ baseball_card.numLikes }}</span>
+
+                                <form method="post" action="{% url 'dislike_card' baseball_card.id %}">
+                                    {% csrf_token %}
+                                    <button type="submit">Dislike</button>
+                                </form>
+                                <span>Dislikes: {{ baseball_card.numDislikes }}</span>
+                            </div>
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </section>
+</body>
+</html>

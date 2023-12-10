@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generate Report</title>
+
+    <style>
+        body {
+            font-family: 'Times New Roman', serif;
+            background-color: #eaeaea;
+            margin: 0;
+            padding: 0;
+        }
+
+        h2 {
+            color: #4285f4;
+        }
+
+        h3 {
+            color: #4285f4;
+        }
+
+        p {
+            margin-bottom: 15px;
+        }
+
+        .card-details {
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h2>Report</h2>
+    <p>Average Likes for Applied Filter: {{ avg_likes }}</p>
+    <p>Average Dislikes for Applied Filter: {{ avg_dislikes }}</p>
+
+    <h3>Card with Maximum Likes</h3>
+    {% if card_with_max_likes %}
+        <div class="card-details">
+            <p>Name: {{ card_with_max_likes.name }}</p>
+            <p>Team: {{ card_with_max_likes.team }}</p>
+            <p>Price: {{ card_with_max_likes.price }}</p>
+            <p>Condition: {{ card_with_max_likes.condition }}</p>
+            <p>Likes: {{ card_with_max_likes.numLikes }}</p>
+        </div>
+    {% else %}
+        <p>No cards with likes found</p>
+    {% endif %}
+
+    <h3>Card with Maximum Dislikes</h3>
+    {% if card_with_max_dislikes %}
+        <div class="card-details">
+            <p>Name: {{ card_with_max_dislikes.name }}</p>
+            <p>Team: {{ card_with_max_dislikes.team }}</p>
+            <p>Price: {{ card_with_max_dislikes.price }}</p>
+            <p>Condition: {{ card_with_max_dislikes.condition }}</p>
+            <p>Dislikes: {{ card_with_max_dislikes.numDislikes }}</p>
+        </div>
+    {% else %}
+        <p>No cards with dislikes found</p>
+    {% endif %}
+</body>
+</html>
